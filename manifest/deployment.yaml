@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: event-mon-go
+  labels:
+    app: event-mon-go
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: event-mon-go
+  template:
+    metadata:
+      labels:
+        app: event-mon-go
+    spec:
+      serviceAccountName: event-mon-sa
+      containers:
+      - name: event-mon-go
+        image: event-mon-go-image
+        imagePullPolicy: Always
+        env:
+          - name: WEBHOOK_URL
+            valueFrom:
+              configMapKeyRef:
+                name: webhook-config
+                key: webhookurl
+
