@@ -8,7 +8,6 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    environment: Monthome  # 환경 지정
 
     steps:
       - name: Checkout repository
@@ -19,21 +18,17 @@ jobs:
 
       - name: Display environment variables
         run: |
-          echo "HARBOR_USER: $HARBOR_USER"
-          echo "REPO_URL: $REPO_URL"
           echo "USER: $USER"
           echo "URL: $URL"
         env:
-          HARBOR_USER: ${{ env.USER }}
-          REPO_URL: ${{ env.URL }}
           USER: ${{ vars.USER }}
           URL: ${{ vars.URL }}
 
       - name: Log in to Harbor
-        run: echo "${{ secrets.TOKEN }}" | docker login "${{ env.REPO_URL }}" -u "${{ env.HARBOR_USER }}" --password-stdin
+        run: echo "${{ secrets.TOKEN }}" | docker login "${{ env.URL }}" -u "${{ env.USER }}" --password-stdin
         env:
-          HARBOR_USER: ${{ env.USER }}
-          REPO_URL: ${{ env.URL }}
+          USER: ${{ vars.USER }}
+          URL: ${{ vars.URL }}
           TOKEN: ${{ secrets.TOKEN }}
 
       - name: Build and push Docker image
@@ -42,4 +37,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ env.REPO_URL }}/test:latest
+          tags: ${{ env.URL }}/utility/test:latest
