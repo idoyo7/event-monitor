@@ -32,27 +32,21 @@ jobs:
           username: ${{ vars.USER }}
           password: ${{ secrets.TOKEN }}
 
+      - name: Extract short SHA
+        id: short-sha
+        run: echo "SHORT_SHA=$(echo ${{ github.sha }} | cut -c 1-6)" >> $GITHUB_ENV
 
-
-      # - name: Build and push Docker image
-      #   uses: docker/build-push-action@v4
-      #   with:
-      #     context: .
-      #     file: ./Dockerfile
-      #     push: true
-      #     tags: ${{ env.URL }}/utility/test:latest
-          
       - name: Build and push to Container Registry
         uses: docker/build-push-action@v4.0.0
         with:
           context: .
           push: true
-          tags: ${{ vars.URL }}/utility/test:${{ github.sha }}
-          
-      # - name: Build and push Docker image
-      #   uses: docker/build-push-action@v4
+          tags: ${{ vars.URL }}/utility/test:${{ env.SHORT_SHA }}
+
+      # - name: Build and push to Container Registry
+      #   uses: docker/build-push-action@v4.0.0
       #   with:
       #     context: .
-      #     file: ./Dockerfile
       #     push: true
-      #     tags: ${{ env.URL }}/utility/test:latest
+      #     tags: ${{ vars.URL }}/utility/test:${{ github.sha }}
+          
