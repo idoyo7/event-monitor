@@ -5,15 +5,10 @@ on:
     branches:
       - main
 
-env:
-  # 환경 변수 설정: 구성 변수 값을 사용
-  HARBOR_USER: ${{ vars.HARBOR_USER }}
-  REPO_URL: ${{ vars.REPO_URL }}
-  TOKEN: ${{ vars.TOKEN }}
-
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    environment: REPO_USER  # 환경 지정
 
     steps:
       - name: Checkout repository
@@ -22,8 +17,20 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
+      - name: Display environment variables
+        run: |
+          echo "HARBOR_USER: $HARBOR_USER"
+          echo "REPO_URL: $REPO_URL"
+        env:
+          HARBOR_USER: ${{ env.HARBOR_USER }}
+          REPO_URL: ${{ env.REPO_URL }}
+
       - name: Log in to Harbor
-        run: echo $TOKEN | docker login $REPO_URL -u $HARBOR_USER --password-stdin
+        run: echo "${{ secrets.TOKEN }}" | docker login "${{ env.REPO_URL }}" -u "${{ env.HARBOR_USER }}" --password-stdin
+        env:
+          HARBOR_USER: ${{ env.HARBOR_USER }}
+          REPO_URL: ${{ env.REPO_URL }}
+          TOKEN: ${{ secrets.TOKEN }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
@@ -31,4 +38,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: $REPO_URL/test:latest
+          tags: ${{ env.REPO_URL }}/test:latest
