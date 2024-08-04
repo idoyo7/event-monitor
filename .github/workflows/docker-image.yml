@@ -26,8 +26,8 @@ jobs:
         env:
           HARBOR_USER: ${{ env.USER }}
           REPO_URL: ${{ env.URL }}
-          USER: ${{ var.USER }}
-          URL: ${{ var.URL }}
+          USER: ${{ vars.USER }}
+          URL: ${{ vars.URL }}
 
       - name: Log in to Harbor
         run: echo "${{ secrets.TOKEN }}" | docker login "${{ env.REPO_URL }}" -u "${{ env.HARBOR_USER }}" --password-stdin
