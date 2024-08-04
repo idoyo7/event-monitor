@@ -24,13 +24,20 @@ jobs:
         env:
           USER: ${{ vars.USER }}
           URL: ${{ vars.URL }}
+          
+      - name: Login to Container Registry
+        uses: docker/login-action@v2.1.0
+        with:
+          registry: ${{ vars.URL }}
+          username: ${{ vars.USER }}
+          password: ${{ secrets.TOKEN }}
 
-      - name: Log in to Harbor
-        run: echo "${{ secrets.TOKEN }}" | docker login "${{ env.URL }}" -u "${{ env.USER }}" --password-stdin
-        env:
-          USER: ${{ vars.USER }}
-          URL: ${{ vars.URL }}
-          TOKEN: ${{ secrets.TOKEN }}
+      # - name: Log in to Harbor
+      #   run: echo "${{ secrets.TOKEN }}" | docker login "${{ env.URL }}" -u "${{ env.USER }}" --password-stdin
+      #   env:
+      #     USER: ${{ vars.USER }}
+      #     URL: ${{ vars.URL }}
+      #     TOKEN: ${{ secrets.TOKEN }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
