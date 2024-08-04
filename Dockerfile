@@ -1,5 +1,5 @@
 # 시작 이미지로 공식 Go 이미지 사용
-FROM golang:1.22 as builder
+FROM golang:1.21.5 as builder
 
 # 작업 디렉토리 설정
 WORKDIR /app
