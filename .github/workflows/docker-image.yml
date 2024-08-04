@@ -16,8 +16,15 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
+      - name: Display environment variables
+        run: |
+          echo "HARBOR_USER: $HARBOR_USER"
+          echo "REPO_URL: $REPO_URL"
+          echo "TOKEN: ${{ secrets.TOKEN }}"
+
       - name: Log in to Harbor
-        run: echo ${{ secrets.TOKEN }} | docker login ${{ env.REPO_URL }} -u ${{ env.HARBOR_USER }} --password-stdin
+        run: |
+          echo "${{ secrets.TOKEN }}" | docker login "$REPO_URL" -u "$HARBOR_USER" --password-stdin
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
@@ -25,4 +32,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ env.REPO_URL }}/test:latest
+          tags: $REPO_URL/test:latest
