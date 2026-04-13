@@ -1,5 +1,5 @@
 # 시작 이미지로 공식 Go 이미지 사용
-FROM golang:1.21.5 as builder
+FROM golang:1.26 as builder
 
 # 작업 디렉토리 설정
 WORKDIR /app
@@ -16,7 +16,7 @@ RUN go mod tidy
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o event .
 
 # 실행 이미지
-FROM alpine:3.19.0  
+FROM alpine:3.21
 RUN apk --no-cache add ca-certificates
 
 WORKDIR /root/
